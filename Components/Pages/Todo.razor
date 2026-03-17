@@ -1,0 +1,36 @@
+﻿@page "/todo"
+@rendermode InteractiveServer
+
+<PageTitle>Мій Список</PageTitle>
+
+<div class="container" style="max-width: 500px; margin-top: 50px;">
+    <h3 class="mb-4">Мій TODO список</h3>
+
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Що треба зробити?"
+               @bind="newTask" />
+        
+        <button class="btn btn-primary" @onclick="AddTask">Додати</button>
+    </div>
+
+    <ul class="list-group">
+        @foreach (var item in tasks)
+        {
+            <li class="list-group-item">@item</li>
+        }
+    </ul>
+</div>
+
+@code {
+    private string newTask = "";
+    private List<string> tasks = new List<string>();
+
+    private void AddTask()
+    {
+        if (!string.IsNullOrWhiteSpace(newTask))
+        {
+            tasks.Add(newTask); 
+            newTask = ""; 
+        }
+    }
+}

@@ -1,0 +1,37 @@
+﻿@page "/advanced"
+@inject IJSRuntime JS
+@rendermode InteractiveServer
+
+<CascadingValue Value="@theme">
+    @* Каскадна передача вниз *@
+    <div class="container mt-5">
+        <h3>Advanced Blazor</h3>
+        <p>Текст у батька: <b>@parentText</b></p>
+
+        @* Використання Two-way binding між компонентами *@
+        <ChildComponent @bind-ChildText="parentText" />
+
+        <hr />
+        <button class="btn btn-info" @onclick="TriggerJS">Викликати C# через JS</button>
+        <p class="text-success">@msgFromJS</p>
+    </div>
+</CascadingValue>
+
+@code {
+    private string theme = "blue";
+    private string parentText = "Пиши тут...";
+    private string msgFromJS = "";
+
+    private async Task TriggerJS()
+    {
+        var dotNetObjRef = DotNetObjectReference.Create(this); 
+    await JS.InvokeVoidAsync("callDotNetMethod", dotNetObjRef);
+    }
+
+    [JSInvokable] @* Метод, доступний для JavaScript [cite: 126] *@
+    public void GetMessageFromJS(string message)
+    {
+        msgFromJS = message;
+        StateHasChanged();
+    }
+}

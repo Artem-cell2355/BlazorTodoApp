@@ -1,0 +1,24 @@
+﻿<h3>ChildComponent</h3>
+
+@inject IJSRuntime JS
+
+<div class="border p-3 mt-3">
+    <h5>Дочірній компонент</h5>
+    @* Каскадний параметр "ловить" значення від батька [cite: 111] *@
+    <p>Колір з каскаду: <span style="color:@ThemeColor">@ThemeColor</span></p>
+
+    @* Two-way binding: синхронізація в обох напрямках [cite: 118] *@
+    <input class="form-control" @bind="ChildText" @bind:event="oninput" />
+
+    <button class="btn btn-warning mt-2" @onclick="NotifyJS">JS Alert</button>
+</div>
+
+@code {
+    [CascadingParameter]
+    public string? ThemeColor { get; set; } = default!;
+
+    [Parameter] public string? ChildText { get; set; } = default!;
+    [Parameter] public EventCallback<string> ChildTextChanged { get; set; }
+
+    private async Task NotifyJS() => await JS.InvokeVoidAsync("showAlert", "Привіт!");
+}
